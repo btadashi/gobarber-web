@@ -11,13 +11,21 @@ import { useField } from '@unform/core';
 
 import { Container, Error } from './styles';
 
+/** Dentro da nossa interface, recebemos o 'containerStyle', como opcional (?) que vai ser um 'object' qualquer */
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
+  containerStyle?: object;
 
   icon?: React.ComponentType<IconBaseProps>;
 }
 
-const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
+/** Passamos 'containerStyle', aqui dentro, iniciando como um objeto vazio */
+const Input: React.FC<InputProps> = ({
+  name,
+  containerStyle = {},
+  icon: Icon,
+  ...rest
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
@@ -44,7 +52,13 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
   }, [fieldName, registerField]);
 
   return (
-    <Container isErrored={!!error} isFilled={isFilled} isFocused={isFocused}>
+    /** Dentro do Container, passo a propriedade 'style' = 'containerStyle' */
+    <Container
+      style={containerStyle}
+      isErrored={!!error}
+      isFilled={isFilled}
+      isFocused={isFocused}
+    >
       {Icon && <Icon size={20} />}
       <input
         onFocus={handleInputFocus}
@@ -55,7 +69,6 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
       />
 
       {error && (
-        /** Passamos propriedade 'title' com o nosso 'error' */
         <Error title={error}>
           <FiAlertCircle color="#c53030" size={20} />
         </Error>
